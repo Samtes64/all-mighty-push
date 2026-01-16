@@ -6,11 +6,21 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 
+// Import from npm packages
+const {
+  PushCore,
+  SQLiteStorageAdapter,
+  WebPushProvider,
+  createExpressMiddleware,
+} = require('@allmightypush/push');
+
+
 // Import from local packages (in production, these would be from npm)
-const { PushCore } = require('../packages/push-core/dist/cjs/index.js');
-const { SQLiteStorageAdapter } = require('../packages/push-storage-sqlite/dist/cjs/index.js');
-const { WebPushProvider } = require('../packages/push-webpush/dist/cjs/index.js');
-const { createExpressMiddleware } = require('../packages/push-express/dist/cjs/index.js');
+// const { PushCore } = require('../packages/push-core/dist/cjs/index.js');
+// const { SQLiteStorageAdapter } = require('../packages/push-storage-sqlite/dist/cjs/index.js');
+// const { WebPushProvider } = require('../packages/push-webpush/dist/cjs/index.js');
+// const { createExpressMiddleware } = require('../packages/push-express/dist/cjs/index.js');
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -92,7 +102,7 @@ app.post('/api/send-notification', async (req, res) => {
       return res.status(400).json({ error: 'subscriptionId is required' });
     }
 
-    const subscription = await storage.getSubscriptionById(subscriptionId);
+    const subscription = await storage.getSubscription(subscriptionId);
 
     if (!subscription) {
       return res.status(404).json({ error: 'Subscription not found' });
@@ -140,10 +150,9 @@ app.post('/api/broadcast', async (req, res) => {
     });
 
     res.json({
-      total: result.total,
-      success: result.success,
-      failed: result.failed,
-      retried: result.retried,
+      total: subscriptions.length,
+      successCount: result.successCount,
+      failureCount: result.failureCount,
     });
   } catch (error) {
     console.error('Error broadcasting notification:', error);
@@ -154,18 +163,16 @@ app.post('/api/broadcast', async (req, res) => {
 // API endpoint to get queue statistics
 app.get('/api/stats', async (req, res) => {
   try {
-    const queueStats = await storage.getQueueStats();
     const subscriptions = await storage.findSubscriptions({});
     const activeSubscriptions = subscriptions.filter(s => s.status === 'active');
+    const pendingRetries = await storage.getRetryQueue({ status: 'pending' });
+    const failedRetries = await storage.getRetryQueue({ status: 'failed' });
 
     res.json({
-      subscriptions: {
-        total: subscriptions.length,
-        active: activeSubscriptions.length,
-        expired: subscriptions.filter(s => s.status === 'expired').length,
-        blocked: subscriptions.filter(s => s.status === 'blocked').length,
-      },
-      queue: queueStats,
+      totalSubscriptions: subscriptions.length,
+      activeSubscriptions: activeSubscriptions.length,
+      queuePending: pendingRetries.length,
+      queueFailed: failedRetries.length,
     });
   } catch (error) {
     console.error('Error getting stats:', error);
