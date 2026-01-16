@@ -11,8 +11,8 @@ const {
   PushCore,
   SQLiteStorageAdapter,
   WebPushProvider,
-  createExpressMiddleware,
 } = require('@allmightypush/push');
+const { createExpressMiddleware } = require('@allmightypush/push-express');
 
 
 // Import from local packages (in production, these would be from npm)
