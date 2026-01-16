@@ -3,6 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "description": "Modular TypeScript-first push notification library for Node.js",
+  "author": "Samtes64",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Samtes64/all-mighty-push.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Samtes64/all-mighty-push/issues"
+  },
+  "homepage": "https://github.com/Samtes64/all-mighty-push#readme",
   "workspaces": [
     "packages/*"
   ],

@@ -32,8 +32,17 @@
     "vapid",
     "typescript"
   ],
-  "author": "",
+  "author": "Samtes64",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Samtes64/all-mighty-push.git",
+    "directory": "packages/push-core"
+  },
+  "bugs": {
+    "url": "https://github.com/Samtes64/all-mighty-push/issues"
+  },
+  "homepage": "https://github.com/Samtes64/all-mighty-push/tree/main/packages/push-core#readme",
   "dependencies": {
     "uuid": "^9.0.1",
     "web-push": "^3.6.7"
