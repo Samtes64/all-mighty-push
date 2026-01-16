@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Push Notification Test</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+      background: #ffffff;
+      color: #37352f;
+      min-height: 100vh;
+      padding: 40px 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e9e9e7;
+      border-radius: 3px;
+      padding: 40px;
+      margin-bottom: 16px;
+      transition: box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      color: #000000;
+      margin-bottom: 8px;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      color: #000000;
+      margin-bottom: 24px;
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      color: #787774;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .status {
+      padding: 12px 16px;
+      border-radius: 3px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      font-weight: 400;
+      border-left: 3px solid;
+    }
+
+    .status.info {
+      background: #f7f6f3;
+      color: #37352f;
+      border-left-color: #37352f;
+    }
+
+    .status.success {
+      background: #f7f6f3;
+      color: #000000;
+      border-left-color: #000000;
+    }
+
+    .status.error {
+      background: #fbe4e4;
+      color: #37352f;
+      border-left-color: #eb5757;
+    }
+
+    .status.warning {
+      background: #fbf3db;
+      color: #37352f;
+      border-left-color: #f2c94c;
+    }
+
+    button {
+      background: #000000;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 3px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      font-family: inherit;
+    }
+
+    button:hover {
+      background: #37352f;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    button:disabled {
+      background: #e9e9e7;
+      color: #9b9a97;
+      cursor: not-allowed;
+    }
+
+    button.secondary {
+      background: #ffffff;
+      color: #37352f;
+      border: 1px solid #e9e9e7;
+    }
+
+    button.secondary:hover {
+      background: #f7f6f3;
+    }
+
+    button.danger {
+      background: #eb5757;
+      color: #ffffff;
+    }
+
+    button.danger:hover {
+      background: #d84040;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #37352f;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #e9e9e7;
+      border-radius: 3px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #37352f;
+      background: #ffffff;
+      transition: all 0.15s ease;
+    }
+
+    input:hover, textarea:hover {
+      border-color: #d3d3d1;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #000000;
+      box-shadow: 0 0 0 1px #000000;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .stat-box {
+      background: #f7f6f3;
+      padding: 20px;
+      border-radius: 3px;
+      border: 1px solid #e9e9e7;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+
+    .stat-box:hover {
+      border-color: #d3d3d1;
+    }
+
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: #000000;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #787774;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
+    }
+
+    .subscription-info {
+      background: #f7f6f3;
+      padding: 16px;
+      border-radius: 3px;
+      margin-top: 16px;
+      font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+      font-size: 12px;
+      word-break: break-all;
+      border: 1px solid #e9e9e7;
+      color: #37352f;
+      line-height: 1.6;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    h3 {
+      margin-top: 24px;
+      margin-bottom: 12px;
+      color: #000000;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: #e9e9e7;
+      margin: 32px 0;
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Selection color */
+    ::selection {
+      background: #000000;
+      color: #ffffff;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 16px;
+      }
+
+      .card {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .stat-value {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Push Notification Test</h1>
+      <p>A minimalistic demo of the @allmightypush notification library</p>
+
+      <div id="status" class="status info">
+        Checking notification support...
+      </div>
+
+      <div class="button-group">
+        <button id="subscribeBtn" onclick="subscribe()" disabled>
+          Subscribe to Notifications
+        </button>
+        <button id="unsubscribeBtn" onclick="unsubscribe()" disabled style="display: none;" class="danger">
+          Unsubscribe
+        </button>
+        <button onclick="refreshStats()" class="secondary">
+          Refresh Stats
+        </button>
+      </div>
+
+      <div id="subscriptionInfo" style="display: none;">
+        <h3>Subscription Details</h3>
+        <div class="subscription-info" id="subscriptionDetails"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Send Test Notification</h2>
+      
+      <div class="form-group">
+        <label for="notifTitle">Title</label>
+        <input type="text" id="notifTitle" value="Test Notification" placeholder="Notification title">
+      </div>
+
+      <div class="form-group">
+        <label for="notifBody">Body</label>
+        <textarea id="notifBody" placeholder="Notification body">Hello! This is a test notification from the push notification library.</textarea>
+      </div>
+
+      <div class="button-group">
+        <button id="sendBtn" onclick="sendNotification()" disabled>
+          Send to Me
+        </button>
+        <button id="broadcastBtn" onclick="broadcast()" class="secondary" disabled>
+          Broadcast to All
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Statistics</h2>
+      <div class="stats" id="stats">
+        <div class="stat-box">
+          <div class="stat-value" id="totalSubs">—</div>
+          <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="activeSubs">—</div>
+          <div class="stat-label">Active</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="queuePending">—</div>
+          <div class="stat-label">Pending</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="queueFailed">—</div>
+          <div class="stat-label">Failed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
